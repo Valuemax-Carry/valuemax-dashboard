@@ -8,7 +8,7 @@ import CreateProducts from "@/components/Dashboard/CreateProducts";
 
 const API_ORIGIN = process.env.NEXT_PUBLIC_API_ORIGIN;
 
-export default function Dashboard() {
+export default function CreateProductsPage() {
   const router = useRouter();
   const [checking, setChecking] = useState(true);
 
@@ -48,7 +48,7 @@ export default function Dashboard() {
       <SideBar />
       <main className="flex-1 px-6 py-8 md:px-10 mt-20 sm:mt-0">
         <div className="max-w-6xl mx-auto">
-          Welcome to Dashboard
+          <CreateProducts />
         </div>
       </main>
     </div>

@@ -11,14 +11,16 @@ import {
   Menu,
   X,
   Loader2,
+  BoxIcon,
+  Package,
 } from "lucide-react";
 
 const API_ORIGIN = process.env.NEXT_PUBLIC_API_ORIGIN;
 
 const navItems = [
   { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-  { label: "Users", href: "/dashboard/users", icon: Users },
-  { label: "Settings", href: "/dashboard/settings", icon: Settings },
+  { label: "CreateProducts", href: "/dashboard/create-products", icon: BoxIcon },
+  { label: "TotalProducts", href: "/dashboard/total-products", icon:  Package},
 ];
 
 export default function SideBar() {
