@@ -31,7 +31,7 @@ export default function TotalProducts() {
       setLoading(true);
       setError(null);
       try {
-        const res = await fetch(`${API_ORIGIN}/api/products/all`, { method: "GET" });
+        const res = await fetch(`${API_ORIGIN}/api/products/all-products`, { method: "GET" });
         const data = await res.json();
         if (data.success) {
           setProducts(data.allproducts);
@@ -56,7 +56,7 @@ export default function TotalProducts() {
     if (!deleteTarget) return;
     setDeleting(true);
     try {
-      const res = await fetch(`${API_ORIGIN}/api/products/${deleteTarget._id}`, {
+      const res = await fetch(`${API_ORIGIN}/products/delete-product/${deleteTarget._id}`, {
         method: "DELETE",
       });
       const data = await res.json();
