@@ -69,7 +69,7 @@ export default function SideBar() {
             <Image src={"/logo.png"} alt="Logo" width={36} height={36} />
             <h1 className="text-xl font-bold tracking-tight">
               <span className="text-[#b60a01]">Value</span>
-              <span className="text-gray-900">Max</span>
+              <span className="text-[#ffbc0b]">Max</span>
             </h1>
           </div>
           <button

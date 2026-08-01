@@ -57,7 +57,7 @@ export default function LoginContainer() {
           <Image src={"/logo.png"} alt="Logo" width={56} height={56} />
           <h1 className="text-2xl font-bold tracking-tight mt-3">
             <span className="text-[#b60a01]">Value</span>
-            <span className="text-gray-900">Max</span>
+            <span className="text-[#ffbc0b]">Max</span>
           </h1>
           <p className="text-sm text-gray-400 mt-1">Admin Dashboard</p>
         </div>
