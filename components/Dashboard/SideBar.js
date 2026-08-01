@@ -20,7 +20,7 @@ const API_ORIGIN = process.env.NEXT_PUBLIC_API_ORIGIN;
 const navItems = [
   { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { label: "CreateProducts", href: "/dashboard/create-products", icon: BoxIcon },
-  { label: "TotalProducts", href: "/dashboard/total-products", icon:  Package},
+  { label: "TotalProducts", href: "/dashboard/total-products", icon: Package },
 ];
 
 export default function SideBar() {
@@ -60,7 +60,7 @@ export default function SideBar() {
       )}
 
       <aside
-        className={`fixed md:static top-0 left-0 h-screen w-64 bg-white border-r border-gray-100 flex flex-col z-50 transform transition-transform duration-300 ease-in-out ${
+        className={`fixed md:sticky top-0 left-0 h-screen w-64 shrink-0 bg-white border-r border-gray-100 flex flex-col z-50 transform transition-transform duration-300 ease-in-out ${
           mobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
         }`}
       >
