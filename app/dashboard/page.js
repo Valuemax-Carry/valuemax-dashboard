@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
+import SideBar from "@/components/Dashboard/SideBar";
 
 const API_ORIGIN = process.env.NEXT_PUBLIC_API_ORIGIN;
 
@@ -42,8 +43,16 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-50">
-      Dashboard
+    <div className="flex min-h-screen bg-gray-50">
+      <SideBar />
+      <main className="flex-1 px-6 py-8 md:px-10 mt-20 sm:mt-0">
+        <div className="max-w-6xl mx-auto">
+          <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
+          <p className="text-sm text-gray-400 mt-1">
+            Welcome back to your admin panel.
+          </p>
+        </div>
+      </main>
     </div>
   );
 }
