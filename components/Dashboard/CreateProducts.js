@@ -6,20 +6,19 @@ import { UploadCloud, Loader2, CheckCircle2, XCircle, X } from "lucide-react";
 const API_ORIGIN = process.env.NEXT_PUBLIC_API_ORIGIN;
 
 const categories = [
-  "Baby Care",
-  "Snacks",
-  "Tea & Coffee",
-  "Pulses",
-  "Rice",
-  "Dairy Products",
-  "Flour",
-  "Oil & Ghee",
-  "Sugar",
-  "Detergents",
-  "Frozen",
-  "Ice Cream",
-  "Drinks & Beverages",
-  "Other",
+  { label: "Baby Care", value: "baby-care" },
+  { label: "Snacks", value: "snacks" },
+  { label: "Tea & Coffee", value: "tea-coffee" },
+  { label: "Pulses", value: "pulses" },
+  { label: "Rice", value: "rice" },
+  { label: "Dairy Products", value: "dairy" },
+  { label: "Flour", value: "flour" },
+  { label: "Oil & Ghee", value: "oil-ghee" },
+  { label: "Sugar", value: "sugar" },
+  { label: "Detergents", value: "detergents" },
+  { label: "Frozen", value: "frozen" },
+  { label: "Ice Cream", value: "icecream" },
+  { label: "Drinks & Beverages", value: "drinks-beverages" },
 ];
 
 export default function CreateProducts() {
@@ -126,17 +125,15 @@ export default function CreateProducts() {
             >
               <option value="">Select category</option>
               {categories.map((cat) => (
-                <option key={cat} value={cat}>
-                  {cat}
+                <option key={cat.value} value={cat.value}>
+                  {cat.label}
                 </option>
               ))}
             </select>
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <label className="text-sm font-medium text-gray-700">
-              Company
-            </label>
+            <label className="text-sm font-medium text-gray-700">Company</label>
             <input
               type="text"
               value={productCompany}
