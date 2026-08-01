@@ -31,7 +31,7 @@ export default function TotalProducts() {
       setLoading(true);
       setError(null);
       try {
-        const res = await fetch(`${API_ORIGIN}/api/products/all-products`, { method: "GET" });
+        const res = await fetch(`${API_ORIGIN}/products/all-products`, { method: "GET" });
         const data = await res.json();
         if (data.success) {
           setProducts(data.allproducts);
