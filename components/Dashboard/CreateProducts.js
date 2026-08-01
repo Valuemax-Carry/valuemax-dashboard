@@ -6,18 +6,19 @@ import { UploadCloud, Loader2, CheckCircle2, XCircle, X } from "lucide-react";
 const API_ORIGIN = process.env.NEXT_PUBLIC_API_ORIGIN;
 
 const categories = [
-  "Fruits & Vegetables",
-  "Dairy & Eggs",
-  "Meat & Poultry",
-  "Bakery",
-  "Beverages",
+  "Baby Care",
   "Snacks",
+  "Tea & Coffee",
+  "Pulses",
   "Rice",
-  "Frozen Foods",
-  "Grains & Pasta",
-  "Spices & Condiments",
-  "Household Essentials",
-  "Personal Care",
+  "Dairy Products",
+  "Flour",
+  "Oil & Ghee",
+  "Sugar",
+  "Detergents",
+  "Frozen",
+  "Ice Cream",
+  "Drinks & Beverages",
   "Other",
 ];
 
