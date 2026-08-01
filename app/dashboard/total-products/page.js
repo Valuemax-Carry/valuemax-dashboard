@@ -8,7 +8,7 @@ import TotalProducts from "@/components/Dashboard/TotalProducts";
 
 const API_ORIGIN = process.env.NEXT_PUBLIC_API_ORIGIN;
 
-export default function Dashboard() {
+export default function TotalProductsPage() {
   const router = useRouter();
   const [checking, setChecking] = useState(true);
 
