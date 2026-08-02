@@ -1,6 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, FreeMode, Mousewheel } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/free-mode";
 
 const API_ORIGIN = process.env.NEXT_PUBLIC_API_ORIGIN;
 
@@ -27,6 +32,9 @@ export default function TotalProducts() {
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [deleting, setDeleting] = useState(false);
   const [visibleCount, setVisibleCount] = useState(8);
+  const [swiperReady, setSwiperReady] = useState(false);
+  const prevRef = useRef(null);
+  const nextRef = useRef(null);
 
   useEffect(() => {
     async function fetchAll() {
@@ -53,6 +61,10 @@ export default function TotalProducts() {
   useEffect(() => {
     setVisibleCount(8);
   }, [selectedCategory]);
+
+  useEffect(() => {
+    setSwiperReady(true);
+  }, []);
 
   const categories = ["All", ...Array.from(new Set(products.map((p) => p.productCategories).filter(Boolean)))];
 
@@ -113,7 +125,7 @@ export default function TotalProducts() {
         .popup-in { animation: popupIn 0.25s cubic-bezier(0.22,1,0.36,1) both; }
         .vm-card { transition: transform 0.2s cubic-bezier(0.22,1,0.36,1), box-shadow 0.2s ease, border-color 0.18s ease; border: 2px solid transparent; }
         .vm-card:hover { transform: translateY(-4px); box-shadow: 0 14px 34px rgba(182,10,1,0.12); border-color: #b60a01; }
-        .vm-filter-btn { transition: all 0.18s ease; }
+        .vm-filter-btn { transition: all 0.18s ease; white-space: nowrap; }
         .vm-filter-btn.active { background: #b60a01; color: #fff; box-shadow: 0 4px 14px rgba(182,10,1,0.25); }
         .vm-filter-btn:not(.active) { background: #fff; color: #374151; border: 1.5px solid #e5e7eb; }
         .vm-filter-btn:not(.active):hover { border-color: #b60a01; color: #b60a01; }
@@ -124,6 +136,11 @@ export default function TotalProducts() {
         .vm-showmore-btn:hover { background: #9a0800; }
         .vm-showless-btn { transition: all 0.18s ease; }
         .vm-showless-btn:hover { background: #f3f4f6; }
+        .vm-cat-swiper { padding: 4px 2px !important; }
+        .vm-cat-swiper .swiper-slide { width: auto !important; }
+        .vm-cat-nav { transition: all 0.18s ease; }
+        .vm-cat-nav:hover { border-color: #b60a01; color: #b60a01; }
+        .vm-cat-nav.swiper-button-disabled { opacity: 0.35; pointer-events: none; }
       `}</style>
 
       <div className="vm-font min-h-screen bg-[#fafafa] px-5 sm:px-8 py-8">
@@ -138,19 +155,53 @@ export default function TotalProducts() {
             </p>
           </div>
 
-          <div className="fade-up bg-white rounded-2xl shadow-sm border border-gray-100 p-4 mb-8 flex flex-wrap gap-2">
-            {categories.map((c) => (
-              <button
-                key={c}
-                onClick={() => setSelectedCategory(c)}
-                className={`vm-filter-btn ${selectedCategory === c ? "active" : ""} px-4 py-2 rounded-xl text-[13px] font-semibold`}
-              >
-                {c}
-                <span className={`ml-2 text-[11px] font-bold ${selectedCategory === c ? "text-red-200" : "text-gray-400"}`}>
-                  {c === "All" ? products.length : products.filter((p) => p.productCategories === c).length}
-                </span>
-              </button>
-            ))}
+          <div className="fade-up bg-white rounded-2xl shadow-sm border border-gray-100 p-3 sm:p-4 mb-8 flex items-center gap-2">
+            <button
+              ref={prevRef}
+              className="vm-cat-nav hidden sm:flex items-center justify-center w-8 h-8 rounded-full border border-gray-200 text-gray-400 shrink-0"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M15 18l-6-6 6-6"/></svg>
+            </button>
+
+            <div className="flex-1 min-w-0">
+              {swiperReady && (
+                <Swiper
+                  modules={[Navigation, FreeMode, Mousewheel]}
+                  navigation={{ prevEl: prevRef.current, nextEl: nextRef.current }}
+                  onBeforeInit={(swiper) => {
+                    swiper.params.navigation.prevEl = prevRef.current;
+                    swiper.params.navigation.nextEl = nextRef.current;
+                  }}
+                  slidesPerView="auto"
+                  spaceBetween={8}
+                  freeMode={{ enabled: true, momentum: true }}
+                  mousewheel={{ forceToAxis: true }}
+                  grabCursor
+                  className="vm-cat-swiper"
+                >
+                  {categories.map((c) => (
+                    <SwiperSlide key={c}>
+                      <button
+                        onClick={() => setSelectedCategory(c)}
+                        className={`vm-filter-btn ${selectedCategory === c ? "active" : ""} px-4 py-2 rounded-xl text-[13px] font-semibold`}
+                      >
+                        {c}
+                        <span className={`ml-2 text-[11px] font-bold ${selectedCategory === c ? "text-red-200" : "text-gray-400"}`}>
+                          {c === "All" ? products.length : products.filter((p) => p.productCategories === c).length}
+                        </span>
+                      </button>
+                    </SwiperSlide>
+                  ))}
+                </Swiper>
+              )}
+            </div>
+
+            <button
+              ref={nextRef}
+              className="vm-cat-nav hidden sm:flex items-center justify-center w-8 h-8 rounded-full border border-gray-200 text-gray-400 shrink-0"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 18l6-6-6-6"/></svg>
+            </button>
           </div>
 
           {error && (
