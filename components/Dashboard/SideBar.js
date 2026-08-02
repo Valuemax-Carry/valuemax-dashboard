@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Image from "next/image";
 import {
@@ -27,12 +27,30 @@ const navItems = [
   { label: "TotalCategories", href: "/dashboard/total-categories", icon: Tags },
 ];
 
+const weekDays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
 export default function SideBar() {
   const router = useRouter();
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
+  const [now, setNow] = useState(new Date());
+
+  useEffect(() => {
+    const timer = setInterval(() => setNow(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const hours = now.getHours() % 12 === 0 ? 12 : now.getHours() % 12;
+  const minutes = now.getMinutes().toString().padStart(2, "0");
+  const seconds = now.getSeconds().toString().padStart(2, "0");
+  const ampm = now.getHours() >= 12 ? "PM" : "AM";
+  const dayName = weekDays[now.getDay()];
+  const monthName = monthNames[now.getMonth()];
+  const dateNum = now.getDate();
+  const year = now.getFullYear();
 
   const handleLogout = async () => {
     setLoggingOut(true);
@@ -64,7 +82,7 @@ export default function SideBar() {
       )}
 
       <aside
-        className={`fixed md:sticky top-0 left-0 h-screen w-64 shrink-0 bg-white border-r border-gray-100 flex flex-col z-50 transform transition-transform duration-300 ease-in-out ${
+        className={`fixed md:sticky top-0 left-0 h-screen w-72 shrink-0 bg-white border-r border-gray-100 flex flex-col z-50 transform transition-transform duration-300 ease-in-out ${
           mobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
         }`}
       >
@@ -84,7 +102,32 @@ export default function SideBar() {
           </button>
         </div>
 
-        <nav className="flex-1 px-4 py-6 flex flex-col gap-1">
+        <div className="mx-4 mt-5 rounded-2xl bg-gradient-to-br from-[#b60a01] via-[#920801] to-[#6e0601] p-5 shadow-lg shadow-red-900/20 relative overflow-hidden">
+          <div className="absolute -top-8 -right-8 w-28 h-28 rounded-full bg-[#ffbc0b]/10 animate-pulse" />
+          <div className="absolute -bottom-10 -left-6 w-24 h-24 rounded-full bg-white/5 animate-pulse" />
+
+          <div className="relative flex items-baseline justify-center gap-1 font-mono">
+            <span key={hours} className="text-3xl font-bold text-white tabular-nums animate-in fade-in zoom-in-95 duration-300">
+              {hours.toString().padStart(2, "0")}
+            </span>
+            <span className="text-3xl font-bold text-[#ffbc0b] animate-pulse">:</span>
+            <span key={minutes} className="text-3xl font-bold text-white tabular-nums animate-in fade-in zoom-in-95 duration-300">
+              {minutes}
+            </span>
+            <span className="text-3xl font-bold text-[#ffbc0b] animate-pulse">:</span>
+            <span key={seconds} className="text-2xl font-semibold text-white/80 tabular-nums animate-in fade-in zoom-in-95 duration-300">
+              {seconds}
+            </span>
+            <span className="text-sm font-semibold text-[#ffbc0b] ml-1.5 self-start mt-1">{ampm}</span>
+          </div>
+
+          <div className="relative text-center mt-2">
+            <p className="text-sm font-semibold text-white/90 tracking-wide">{dayName}</p>
+            <p className="text-xs text-white/60 mt-0.5">{monthName} {dateNum}, {year}</p>
+          </div>
+        </div>
+
+        <nav className="flex-1 px-4 py-6 flex flex-col gap-1.5 overflow-y-auto">
           {navItems.map((item) => {
             const Icon = item.icon;
             const active = pathname === item.href;
@@ -95,13 +138,16 @@ export default function SideBar() {
                   router.push(item.href);
                   setMobileOpen(false);
                 }}
-                className={`flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
+                className={`group flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 relative overflow-hidden ${
                   active
-                    ? "bg-[#b60a01] text-white shadow-sm"
-                    : "text-gray-600 hover:bg-gray-50 hover:text-[#b60a01]"
+                    ? "bg-gradient-to-r from-[#b60a01] to-[#920801] text-white shadow-md shadow-red-900/20"
+                    : "text-gray-600 hover:bg-red-50/60 hover:text-[#b60a01]"
                 }`}
               >
-                <Icon className="w-4 h-4" />
+                {active && (
+                  <span className="absolute left-0 top-0 h-full w-1 bg-[#ffbc0b]" />
+                )}
+                <Icon className={`w-4 h-4 transition-transform duration-200 ${active ? "scale-110" : "group-hover:scale-110"}`} />
                 {item.label}
               </button>
             );
@@ -111,7 +157,7 @@ export default function SideBar() {
         <div className="px-4 py-6 border-t border-gray-100">
           <button
             onClick={() => setShowLogoutModal(true)}
-            className="flex items-center gap-3 w-full px-4 py-2.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-red-50 hover:text-[#b60a01] transition-all duration-200"
+            className="flex items-center gap-3 w-full px-4 py-2.5 rounded-xl text-sm font-medium text-gray-600 hover:bg-red-50 hover:text-[#b60a01] transition-all duration-200"
           >
             <LogOut className="w-4 h-4" />
             Logout
