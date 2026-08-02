@@ -26,6 +26,7 @@ export default function CreateProducts() {
   const [productName, setProductName] = useState("");
   const [productCategories, setProductCategories] = useState("");
   const [productCompany, setProductCompany] = useState("");
+  const [productPrice, setProductPrice] = useState("");
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -49,6 +50,7 @@ export default function CreateProducts() {
     setProductName("");
     setProductCategories("");
     setProductCompany("");
+    setProductPrice("");
     removeImage();
   };
 
@@ -57,7 +59,7 @@ export default function CreateProducts() {
     setError("");
     setSuccess("");
 
-    if (!productName || !productCategories || !productCompany || !imageFile) {
+    if (!productName || !productCategories || !productCompany || !productPrice || !imageFile) {
       setError("Please fill all fields");
       return;
     }
@@ -69,6 +71,7 @@ export default function CreateProducts() {
       formData.append("productName", productName);
       formData.append("productCategories", productCategories);
       formData.append("productCompany", productCompany);
+      formData.append("productPrice", productPrice);
       formData.append("productImage", imageFile);
 
       const res = await fetch(`${API_ORIGIN}/products/create-product`, {
@@ -142,6 +145,18 @@ export default function CreateProducts() {
               className="w-full px-4 py-2.5 rounded-lg border border-gray-200 outline-none focus:border-[#b60a01] focus:ring-2 focus:ring-[#b60a01]/10 transition-all duration-200 text-sm"
             />
           </div>
+        </div>
+
+        <div className="flex flex-col gap-1.5">
+          <label className="text-sm font-medium text-gray-700">Price</label>
+          <input
+            type="number"
+            value={productPrice}
+            onChange={(e) => setProductPrice(e.target.value)}
+            placeholder="e.g. 100"
+            min="0"
+            className="w-full px-4 py-2.5 rounded-lg border border-gray-200 outline-none focus:border-[#b60a01] focus:ring-2 focus:ring-[#b60a01]/10 transition-all duration-200 text-sm"
+          />
         </div>
 
         <div className="flex flex-col gap-1.5">
