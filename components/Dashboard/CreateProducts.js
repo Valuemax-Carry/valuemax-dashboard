@@ -59,7 +59,7 @@ export default function CreateProducts() {
     setError("");
     setSuccess("");
 
-    if (!productName || !productCategories || !productCompany || !productPrice || !imageFile) {
+    if (!productName || !productCategories || !productCompany ||  !imageFile) {
       setError("Please fill all fields");
       return;
     }
