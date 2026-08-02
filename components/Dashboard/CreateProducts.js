@@ -37,7 +37,7 @@ export default function CreateProducts() {
   useEffect(() => {
     async function fetchCategories() {
       try {
-        const res = await fetch(`${API_ORIGIN}/categories/fetch-categories`, { method: "GET" });
+        const res = await fetch(`${API_ORIGIN}/category/all-categories`, { method: "GET" });
         const data = await res.json();
         if (data.success) {
           setFetchedCategories(data.categories);
