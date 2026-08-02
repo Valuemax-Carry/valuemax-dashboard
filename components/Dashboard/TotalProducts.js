@@ -26,7 +26,7 @@ export default function TotalProducts() {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [deleting, setDeleting] = useState(false);
-  const [visibleCount, setVisibleCount] = useState(6);
+  const [visibleCount, setVisibleCount] = useState(8);
 
   useEffect(() => {
     async function fetchAll() {
