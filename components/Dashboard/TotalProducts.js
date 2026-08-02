@@ -7,6 +7,7 @@ const API_ORIGIN = process.env.NEXT_PUBLIC_API_ORIGIN;
 function getImageSrc(productImage) {
   if (!productImage) return null;
   if (typeof productImage === "string") return productImage;
+  if (productImage.url) return productImage.url;
   if (productImage.data && productImage.data.data && productImage.contentType) {
     const bytes = new Uint8Array(productImage.data.data);
     let binary = "";
