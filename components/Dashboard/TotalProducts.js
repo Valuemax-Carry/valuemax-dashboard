@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
 const API_ORIGIN = process.env.NEXT_PUBLIC_API_ORIGIN;
@@ -56,9 +57,10 @@ export default function TotalProducts() {
     fetchAll();
   }, []);
 
-  useEffect(() => {
+  const handleCategorySelect = (category) => {
+    setSelectedCategory(category);
     setVisibleCount(8);
-  }, [selectedCategory]);
+  };
 
   const updateScrollState = () => {
     const el = trackRef.current;
@@ -162,9 +164,9 @@ export default function TotalProducts() {
         .fade-up { animation: fadeUp 0.4s cubic-bezier(0.22,1,0.36,1) both; }
         .fade-in { animation: fadeIn 0.25s ease both; }
         .popup-in { animation: popupIn 0.25s cubic-bezier(0.22,1,0.36,1) both; }
-        .vm-card { transition: transform 0.2s cubic-bezier(0.22,1,0.36,1), box-shadow 0.2s ease, border-color 0.18s ease; border: 2px solid transparent; }
+        .vm-card { transition: transform 0.2s cubic-bezier(0.22,1,0.36,1), box-shadow 0.2s ease, border-color 0.18s ease; border: 2px solid transparent; min-width: 0; max-width: 100%; overflow: hidden; }
         .vm-card:hover { transform: translateY(-4px); box-shadow: 0 14px 34px rgba(182,10,1,0.12); border-color: #b60a01; }
-        .vm-filter-btn { transition: all 0.18s ease; white-space: nowrap; flex-shrink: 0; }
+        .vm-filter-btn { transition: all 0.18s ease; white-space: nowrap; flex-shrink: 0; max-width: 180px; overflow: hidden; text-overflow: ellipsis; }
         .vm-filter-btn.active { background: #b60a01; color: #fff; box-shadow: 0 4px 14px rgba(182,10,1,0.25); }
         .vm-filter-btn:not(.active) { background: #fff; color: #374151; border: 1.5px solid #e5e7eb; }
         .vm-filter-btn:not(.active):hover { border-color: #b60a01; color: #b60a01; }
@@ -183,8 +185,8 @@ export default function TotalProducts() {
         .vm-cat-nav:disabled { opacity: 0.35; pointer-events: none; }
       `}</style>
 
-      <div className="vm-font min-h-screen bg-[#fafafa] px-5 sm:px-8 py-8">
-        <div className="max-w-[1280px] mx-auto">
+      <div className="vm-font min-h-screen bg-[#fafafa] px-5 sm:px-8 py-8 overflow-x-hidden">
+        <div className="max-w-7xl mx-auto w-full">
 
           <div className="fade-up mb-8">
             <p className="text-[11px] uppercase tracking-[2px] text-[#b60a01] font-bold mb-1">ValueMax Cash & Carry</p>
@@ -195,7 +197,7 @@ export default function TotalProducts() {
             </p>
           </div>
 
-          <div className="fade-up bg-white rounded-2xl shadow-sm border border-gray-100 p-3 sm:p-4 mb-8 flex items-center gap-2">
+          <div className="fade-up bg-white rounded-2xl shadow-sm border border-gray-100 p-3 sm:p-4 mb-8 flex items-center gap-2 w-full overflow-hidden">
             <button
               type="button"
               onClick={() => scrollByAmount(-220)}
@@ -211,12 +213,12 @@ export default function TotalProducts() {
               onMouseMove={handleMouseMove}
               onMouseUp={stopDragging}
               onMouseLeave={stopDragging}
-              className="vm-cat-track flex items-center gap-2 overflow-x-auto flex-1 min-w-0"
+              className="vm-cat-track flex items-center gap-2 overflow-x-auto flex-1 min-w-0 max-w-full"
             >
               {categories.map((c) => (
                 <button
                   key={c}
-                  onClick={() => setSelectedCategory(c)}
+                  onClick={() => handleCategorySelect(c)}
                   className={`vm-filter-btn ${selectedCategory === c ? "active" : ""} px-4 py-2 rounded-xl text-[13px] font-semibold`}
                 >
                   {c}
@@ -261,10 +263,10 @@ export default function TotalProducts() {
                 {visibleProducts.map((p) => {
                   const src = getImageSrc(p.productImage);
                   return (
-                    <div key={p._id} className="vm-card bg-white rounded-2xl overflow-hidden shadow-sm">
+                    <div key={p._id} className="vm-card bg-white rounded-2xl overflow-hidden shadow-sm min-w-0 max-w-full">
                       <div className="relative w-full h-40 bg-gray-50 overflow-hidden">
                         {src ? (
-                          <img src={src} alt={p.productName} className="w-full h-full object-cover" />
+                          <Image src={src} alt={p.productName} width={600} height={400} unoptimized className="w-full h-full object-cover" />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center">
                             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" strokeWidth="1.2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
@@ -276,10 +278,10 @@ export default function TotalProducts() {
                           </span>
                         </div>
                       </div>
-                      <div className="px-4 py-4">
-                        <p className="font-semibold text-gray-900 text-[14px] leading-snug mb-1 line-clamp-2">{p.productName}</p>
-                        <p className="text-gray-400 text-[12px] mb-3">{p.productCompany}</p>
-                        <p className="text-gray-400 text-[12px] mb-3">Rs.{p.productPrice}</p>
+                      <div className="px-4 py-4 min-w-0">
+                        <p className="font-semibold text-gray-900 text-[14px] leading-snug mb-1 line-clamp-2 wrap-break-word">{p.productName}</p>
+                        <p className="text-gray-400 text-[12px] mb-3 wrap-break-word line-clamp-1">{p.productCompany}</p>
+                        <p className="text-gray-400 text-[12px] mb-3 wrap-break-word">Rs.{p.productPrice}</p>
                         <button
                           onClick={() => setDeleteTarget(p)}
                           className="vm-delete-btn w-full bg-[#b60a01] text-white text-[12px] font-bold px-3.5 py-2 rounded-lg"
