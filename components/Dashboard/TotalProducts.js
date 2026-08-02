@@ -174,6 +174,7 @@ export default function TotalProducts() {
                     <div className="px-4 py-4">
                       <p className="font-semibold text-gray-900 text-[14px] leading-snug mb-1 line-clamp-2">{p.productName}</p>
                       <p className="text-gray-400 text-[12px] mb-3">{p.productCompany}</p>
+                      <p className="text-gray-400 text-[12px] mb-3">{p.productPrice}</p>
                       <button
                         onClick={() => setDeleteTarget(p)}
                         className="vm-delete-btn w-full bg-[#b60a01] text-white text-[12px] font-bold px-3.5 py-2 rounded-lg"
