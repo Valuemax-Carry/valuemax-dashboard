@@ -145,7 +145,7 @@ export default function WelcomeDashboard() {
       `}</style>
 
       <div className="vm-font min-h-screen w-full bg-[#fafafa] px-4 sm:px-6 lg:px-10 py-6 sm:py-8">
-        <div className="w-full max-w-[1920px] mx-auto">
+        <div className="w-full  max-w-2xl mx-auto">
 
           <div className="fade-up-1 vm-hero-banner rounded-3xl w-full px-6 sm:px-10 py-8 sm:py-10 mb-8 relative overflow-hidden">
             <div className="relative z-10">
