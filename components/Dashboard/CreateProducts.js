@@ -37,7 +37,7 @@ export default function CreateProducts() {
   useEffect(() => {
     async function fetchCategories() {
       try {
-        const res = await fetch(`${API_ORIGIN}/category/all-categories`, { method: "GET" });
+        const res = await fetch(`${API_ORIGIN}/categories/fetch-categories`, { method: "GET" });
         const data = await res.json();
         if (data.success) {
           setFetchedCategories(data.categories);
@@ -77,7 +77,7 @@ export default function CreateProducts() {
     setError("");
     setSuccess("");
 
-    if (!productName || !productCategories || !productCompany ||  !imageFile) {
+    if (!productName || !productCategories || !productCompany || !imageFile) {
       setError("Please fill all fields");
       return;
     }
@@ -145,11 +145,22 @@ export default function CreateProducts() {
               className="w-full px-4 py-2.5 rounded-lg border border-gray-200 outline-none focus:border-[#b60a01] focus:ring-2 focus:ring-[#b60a01]/10 transition-all duration-200 text-sm bg-white"
             >
               <option value="">Select category</option>
-              {fetchedCategories.map((cat) => (
-                <option key={cat._id} value={cat.slug}>
-                  {cat.name}
-                </option>
-              ))}
+              <optgroup label="Default Categories">
+                {categories.map((cat) => (
+                  <option key={cat.value} value={cat.value}>
+                    {cat.label}
+                  </option>
+                ))}
+              </optgroup>
+              {fetchedCategories.length > 0 && (
+                <optgroup label="Custom Categories">
+                  {fetchedCategories.map((cat) => (
+                    <option key={cat._id} value={cat.slug}>
+                      {cat.name}
+                    </option>
+                  ))}
+                </optgroup>
+              )}
             </select>
           </div>
 
