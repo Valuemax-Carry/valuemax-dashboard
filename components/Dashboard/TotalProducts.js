@@ -51,7 +51,7 @@ export default function TotalProducts() {
   }, []);
 
   useEffect(() => {
-    setVisibleCount(6);
+    setVisibleCount(8);
   }, [selectedCategory]);
 
   const categories = ["All", ...Array.from(new Set(products.map((p) => p.productCategories).filter(Boolean)))];
@@ -61,7 +61,11 @@ export default function TotalProducts() {
   const visibleProducts = filtered.slice(0, visibleCount);
 
   const handleShowMore = () => {
-    setVisibleCount((prev) => prev + 6);
+    setVisibleCount((prev) => prev + 8);
+  };
+
+  const handleShowLess = () => {
+    setVisibleCount(8);
   };
 
   const handleConfirmDelete = async () => {
@@ -117,6 +121,8 @@ export default function TotalProducts() {
         .vm-overlay { animation: fadeIn 0.2s ease both; }
         .vm-showmore-btn { transition: all 0.18s ease; }
         .vm-showmore-btn:hover { background: #9a0800; }
+        .vm-showless-btn { transition: all 0.18s ease; }
+        .vm-showless-btn:hover { background: #f3f4f6; }
       `}</style>
 
       <div className="vm-font min-h-screen bg-[#fafafa] px-5 sm:px-8 py-8">
@@ -208,6 +214,17 @@ export default function TotalProducts() {
                     className="vm-showmore-btn bg-[#b60a01] text-white text-[13px] font-bold px-6 py-3 rounded-xl"
                   >
                     Show More
+                  </button>
+                </div>
+              )}
+
+              {visibleCount >= filtered.length && filtered.length > 8 && (
+                <div className="fade-in flex justify-center mt-8">
+                  <button
+                    onClick={handleShowLess}
+                    className="vm-showless-btn bg-white text-[#b60a01] border border-[#b60a01] text-[13px] font-bold px-6 py-3 rounded-xl"
+                  >
+                    Show Less
                   </button>
                 </div>
               )}
