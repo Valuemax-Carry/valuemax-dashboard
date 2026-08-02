@@ -1,7 +1,11 @@
 "use client";
 
-import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, FreeMode, Mousewheel } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/free-mode";
 
 const API_ORIGIN = process.env.NEXT_PUBLIC_API_ORIGIN;
 
@@ -28,12 +32,9 @@ export default function TotalProducts() {
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [deleting, setDeleting] = useState(false);
   const [visibleCount, setVisibleCount] = useState(8);
-  const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [canScrollRight, setCanScrollRight] = useState(false);
-  const trackRef = useRef(null);
-  const isDragging = useRef(false);
-  const dragStartX = useRef(0);
-  const dragStartScroll = useRef(0);
+  const [swiperReady, setSwiperReady] = useState(false);
+  const prevRef = useRef(null);
+  const nextRef = useRef(null);
 
   useEffect(() => {
     async function fetchAll() {
@@ -57,55 +58,13 @@ export default function TotalProducts() {
     fetchAll();
   }, []);
 
-  const handleCategorySelect = (category) => {
-    setSelectedCategory(category);
+  useEffect(() => {
     setVisibleCount(8);
-  };
-
-  const updateScrollState = () => {
-    const el = trackRef.current;
-    if (!el) return;
-    setCanScrollLeft(el.scrollLeft > 4);
-    setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 4);
-  };
+  }, [selectedCategory]);
 
   useEffect(() => {
-    updateScrollState();
-    const el = trackRef.current;
-    if (!el) return;
-    el.addEventListener("scroll", updateScrollState);
-    window.addEventListener("resize", updateScrollState);
-    return () => {
-      el.removeEventListener("scroll", updateScrollState);
-      window.removeEventListener("resize", updateScrollState);
-    };
-  }, [products]);
-
-  const scrollByAmount = (amount) => {
-    const el = trackRef.current;
-    if (!el) return;
-    el.scrollBy({ left: amount, behavior: "smooth" });
-  };
-
-  const handleMouseDown = (e) => {
-    const el = trackRef.current;
-    if (!el) return;
-    isDragging.current = true;
-    dragStartX.current = e.pageX;
-    dragStartScroll.current = el.scrollLeft;
-  };
-
-  const handleMouseMove = (e) => {
-    if (!isDragging.current) return;
-    const el = trackRef.current;
-    if (!el) return;
-    const delta = e.pageX - dragStartX.current;
-    el.scrollLeft = dragStartScroll.current - delta;
-  };
-
-  const stopDragging = () => {
-    isDragging.current = false;
-  };
+    setSwiperReady(true);
+  }, []);
 
   const categories = ["All", ...Array.from(new Set(products.map((p) => p.productCategories).filter(Boolean)))];
 
@@ -164,9 +123,9 @@ export default function TotalProducts() {
         .fade-up { animation: fadeUp 0.4s cubic-bezier(0.22,1,0.36,1) both; }
         .fade-in { animation: fadeIn 0.25s ease both; }
         .popup-in { animation: popupIn 0.25s cubic-bezier(0.22,1,0.36,1) both; }
-        .vm-card { transition: transform 0.2s cubic-bezier(0.22,1,0.36,1), box-shadow 0.2s ease, border-color 0.18s ease; border: 2px solid transparent; min-width: 0; max-width: 100%; overflow: hidden; }
+        .vm-card { transition: transform 0.2s cubic-bezier(0.22,1,0.36,1), box-shadow 0.2s ease, border-color 0.18s ease; border: 2px solid transparent; }
         .vm-card:hover { transform: translateY(-4px); box-shadow: 0 14px 34px rgba(182,10,1,0.12); border-color: #b60a01; }
-        .vm-filter-btn { transition: all 0.18s ease; white-space: nowrap; flex-shrink: 0; max-width: 180px; overflow: hidden; text-overflow: ellipsis; }
+        .vm-filter-btn { transition: all 0.18s ease; white-space: nowrap; }
         .vm-filter-btn.active { background: #b60a01; color: #fff; box-shadow: 0 4px 14px rgba(182,10,1,0.25); }
         .vm-filter-btn:not(.active) { background: #fff; color: #374151; border: 1.5px solid #e5e7eb; }
         .vm-filter-btn:not(.active):hover { border-color: #b60a01; color: #b60a01; }
@@ -177,16 +136,15 @@ export default function TotalProducts() {
         .vm-showmore-btn:hover { background: #9a0800; }
         .vm-showless-btn { transition: all 0.18s ease; }
         .vm-showless-btn:hover { background: #f3f4f6; }
-        .vm-cat-track { scroll-behavior: smooth; -webkit-overflow-scrolling: touch; cursor: grab; }
-        .vm-cat-track:active { cursor: grabbing; }
-        .vm-cat-track::-webkit-scrollbar { display: none; }
+        .vm-cat-swiper { padding: 4px 2px !important; }
+        .vm-cat-swiper .swiper-slide { width: auto !important; }
         .vm-cat-nav { transition: all 0.18s ease; }
         .vm-cat-nav:hover { border-color: #b60a01; color: #b60a01; }
-        .vm-cat-nav:disabled { opacity: 0.35; pointer-events: none; }
+        .vm-cat-nav.swiper-button-disabled { opacity: 0.35; pointer-events: none; }
       `}</style>
 
-      <div className="vm-font min-h-screen bg-[#fafafa] px-5 sm:px-8 py-8 overflow-x-hidden">
-        <div className="max-w-7xl mx-auto w-full">
+      <div className="vm-font min-h-screen bg-[#fafafa] px-5 sm:px-8 py-8">
+        <div className="max-w-[1280px] mx-auto">
 
           <div className="fade-up mb-8">
             <p className="text-[11px] uppercase tracking-[2px] text-[#b60a01] font-bold mb-1">ValueMax Cash & Carry</p>
@@ -197,42 +155,49 @@ export default function TotalProducts() {
             </p>
           </div>
 
-          <div className="fade-up bg-white rounded-2xl shadow-sm border border-gray-100 p-3 sm:p-4 mb-8 flex items-center gap-2 w-full overflow-hidden">
+          <div className="fade-up bg-white rounded-2xl shadow-sm border border-gray-100 p-3 sm:p-4 mb-8 flex items-center gap-2">
             <button
-              type="button"
-              onClick={() => scrollByAmount(-220)}
-              disabled={!canScrollLeft}
+              ref={prevRef}
               className="vm-cat-nav hidden sm:flex items-center justify-center w-8 h-8 rounded-full border border-gray-200 text-gray-400 shrink-0"
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M15 18l-6-6 6-6"/></svg>
             </button>
 
-            <div
-              ref={trackRef}
-              onMouseDown={handleMouseDown}
-              onMouseMove={handleMouseMove}
-              onMouseUp={stopDragging}
-              onMouseLeave={stopDragging}
-              className="vm-cat-track flex items-center gap-2 overflow-x-auto flex-1 min-w-0 max-w-full"
-            >
-              {categories.map((c) => (
-                <button
-                  key={c}
-                  onClick={() => handleCategorySelect(c)}
-                  className={`vm-filter-btn ${selectedCategory === c ? "active" : ""} px-4 py-2 rounded-xl text-[13px] font-semibold`}
+            <div className="flex-1 min-w-0">
+              {swiperReady && (
+                <Swiper
+                  modules={[Navigation, FreeMode, Mousewheel]}
+                  navigation={{ prevEl: prevRef.current, nextEl: nextRef.current }}
+                  onBeforeInit={(swiper) => {
+                    swiper.params.navigation.prevEl = prevRef.current;
+                    swiper.params.navigation.nextEl = nextRef.current;
+                  }}
+                  slidesPerView="auto"
+                  spaceBetween={8}
+                  freeMode={{ enabled: true, momentum: true }}
+                  mousewheel={{ forceToAxis: true }}
+                  grabCursor
+                  className="vm-cat-swiper"
                 >
-                  {c}
-                  <span className={`ml-2 text-[11px] font-bold ${selectedCategory === c ? "text-red-200" : "text-gray-400"}`}>
-                    {c === "All" ? products.length : products.filter((p) => p.productCategories === c).length}
-                  </span>
-                </button>
-              ))}
+                  {categories.map((c) => (
+                    <SwiperSlide key={c}>
+                      <button
+                        onClick={() => setSelectedCategory(c)}
+                        className={`vm-filter-btn ${selectedCategory === c ? "active" : ""} px-4 py-2 rounded-xl text-[13px] font-semibold`}
+                      >
+                        {c}
+                        <span className={`ml-2 text-[11px] font-bold ${selectedCategory === c ? "text-red-200" : "text-gray-400"}`}>
+                          {c === "All" ? products.length : products.filter((p) => p.productCategories === c).length}
+                        </span>
+                      </button>
+                    </SwiperSlide>
+                  ))}
+                </Swiper>
+              )}
             </div>
 
             <button
-              type="button"
-              onClick={() => scrollByAmount(220)}
-              disabled={!canScrollRight}
+              ref={nextRef}
               className="vm-cat-nav hidden sm:flex items-center justify-center w-8 h-8 rounded-full border border-gray-200 text-gray-400 shrink-0"
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 18l6-6-6-6"/></svg>
@@ -263,10 +228,10 @@ export default function TotalProducts() {
                 {visibleProducts.map((p) => {
                   const src = getImageSrc(p.productImage);
                   return (
-                    <div key={p._id} className="vm-card bg-white rounded-2xl overflow-hidden shadow-sm min-w-0 max-w-full">
+                    <div key={p._id} className="vm-card bg-white rounded-2xl overflow-hidden shadow-sm">
                       <div className="relative w-full h-40 bg-gray-50 overflow-hidden">
                         {src ? (
-                          <Image src={src} alt={p.productName} width={600} height={400} unoptimized className="w-full h-full object-cover" />
+                          <img src={src} alt={p.productName} className="w-full h-full object-cover" />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center">
                             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" strokeWidth="1.2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
@@ -278,10 +243,10 @@ export default function TotalProducts() {
                           </span>
                         </div>
                       </div>
-                      <div className="px-4 py-4 min-w-0">
-                        <p className="font-semibold text-gray-900 text-[14px] leading-snug mb-1 line-clamp-2 wrap-break-word">{p.productName}</p>
-                        <p className="text-gray-400 text-[12px] mb-3 wrap-break-word line-clamp-1">{p.productCompany}</p>
-                        <p className="text-gray-400 text-[12px] mb-3 wrap-break-word">Rs.{p.productPrice}</p>
+                      <div className="px-4 py-4">
+                        <p className="font-semibold text-gray-900 text-[14px] leading-snug mb-1 line-clamp-2">{p.productName}</p>
+                        <p className="text-gray-400 text-[12px] mb-3">{p.productCompany}</p>
+                        <p className="text-gray-400 text-[12px] mb-3">Rs.{p.productPrice}</p>
                         <button
                           onClick={() => setDeleteTarget(p)}
                           className="vm-delete-btn w-full bg-[#b60a01] text-white text-[12px] font-bold px-3.5 py-2 rounded-lg"
