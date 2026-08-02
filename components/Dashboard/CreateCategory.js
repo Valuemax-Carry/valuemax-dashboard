@@ -49,7 +49,7 @@ export default function CreateCategory() {
       formData.append("name", name);
       formData.append("categoryImage", imageFile);
 
-      const res = await fetch(`${API_ORIGIN}/categories/create-category`, {
+      const res = await fetch(`${API_ORIGIN}/category/create-category`, {
         method: "POST",
         credentials: "include",
         body: formData,
