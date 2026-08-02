@@ -74,8 +74,10 @@ export default function WelcomeDashboard() {
     },
   ];
 
+  const useSwiper = stats.length > 4;
+
   const renderStatCard = (s) => (
-    <div className="vm-stat-card bg-white rounded-2xl shadow-sm p-5 h-full w-full">
+    <div className="vm-stat-card bg-white rounded-2xl shadow-sm p-5 h-full">
       <div className="w-11 h-11 rounded-xl bg-red-50 flex items-center justify-center mb-4">
         {s.icon}
       </div>
@@ -117,10 +119,10 @@ export default function WelcomeDashboard() {
           top: 50%;
           transform: translateY(-50%);
           z-index: 20;
-          width: 38px;
-          height: 38px;
+          width: 40px;
+          height: 40px;
           border-radius: 10px;
-          background: linear-gradient(135deg, #b60a01, #8a0700);
+          background: #b60a01;
           border: 2px solid #FFD100;
           color: #FFD100;
           display: flex;
@@ -134,20 +136,26 @@ export default function WelcomeDashboard() {
           user-select: none;
         }
         .stat-nav-btn:hover {
-          background: linear-gradient(135deg, #c0001a, #920801);
+          background: #c0001a;
           box-shadow: 0 8px 24px rgba(182,10,1,0.35);
           transform: translateY(-52%);
         }
         .stat-nav-btn:active { transform: translateY(-48%); }
         .stat-nav-btn.swiper-button-disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none; }
-        .stat-nav-prev { left: -6px; }
-        .stat-nav-next { right: -6px; }
+        .stat-nav-prev { left: -14px; }
+        .stat-nav-next { right: -14px; }
+
+        @media (max-width: 640px) {
+          .stat-nav-prev { left: -8px; }
+          .stat-nav-next { right: -8px; }
+          .stat-nav-btn { width: 34px; height: 34px; font-size: 14px; border-radius: 8px; }
+        }
       `}</style>
 
-      <div className="vm-font min-h-screen w-full bg-[#fafafa] px-4 sm:px-6 lg:px-10 py-6 sm:py-8">
-        <div className="w-full max-w-[320px] sm:max-w-3xl mx-auto">
+      <div className="vm-font min-h-screen bg-[#fafafa] px-5 sm:px-8 py-8">
+        <div className="max-w-[1280px] mx-auto">
 
-          <div className="fade-up-1 vm-hero-banner rounded-3xl w-full px-6 sm:px-10 py-8 sm:py-10 mb-8 relative overflow-hidden">
+          <div className="fade-up-1 vm-hero-banner rounded-3xl px-6 sm:px-10 py-8 sm:py-10 mb-8 relative overflow-hidden">
             <div className="relative z-10">
               <p className="text-[11px] uppercase tracking-[2px] text-red-100 font-bold mb-2">ValueMax Cash & Carry</p>
               <h1 className="vm-display text-2xl sm:text-3xl font-extrabold text-white mb-2">Welcome to your Dashboard</h1>
@@ -159,40 +167,47 @@ export default function WelcomeDashboard() {
             <div className="absolute right-16 -top-10 w-32 h-32 rounded-full bg-white/10" />
           </div>
 
-          <div className="fade-up-2 mb-8 w-full">
-            <div className="sm:hidden relative px-6 w-full">
-              <button className="stat-nav-btn stat-nav-prev swiper-stat-prev" aria-label="Previous">
-                ‹
-              </button>
-              <button className="stat-nav-btn stat-nav-next swiper-stat-next" aria-label="Next">
-                ›
-              </button>
-              <Swiper
-                modules={[Navigation]}
-                spaceBetween={14}
-                slidesPerView={2}
-                navigation={{
-                  prevEl: ".swiper-stat-prev",
-                  nextEl: ".swiper-stat-next",
-                }}
-                className="stats-swiper w-full"
-              >
+          <div className="fade-up-2 mb-8">
+            {useSwiper ? (
+              <div className="relative px-6 sm:px-7 w-full">
+                <button className="stat-nav-btn stat-nav-prev swiper-stat-prev" aria-label="Previous">
+                  ‹
+                </button>
+                <button className="stat-nav-btn stat-nav-next swiper-stat-next" aria-label="Next">
+                  ›
+                </button>
+                <Swiper
+                  modules={[Navigation]}
+                  spaceBetween={16}
+                  slidesPerView={2}
+                  breakpoints={{
+                    480: { slidesPerView: 2, spaceBetween: 16 },
+                    768: { slidesPerView: 3, spaceBetween: 18 },
+                    1024: { slidesPerView: 4, spaceBetween: 18 },
+                  }}
+                  navigation={{
+                    prevEl: ".swiper-stat-prev",
+                    nextEl: ".swiper-stat-next",
+                  }}
+                  className="stats-swiper w-full"
+                >
+                  {stats.map((s) => (
+                    <SwiperSlide key={s.label} className="h-auto">
+                      {renderStatCard(s)}
+                    </SwiperSlide>
+                  ))}
+                </Swiper>
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 w-full">
                 {stats.map((s) => (
-                  <SwiperSlide key={s.label} className="h-auto">
-                    {renderStatCard(s)}
-                  </SwiperSlide>
+                  <div key={s.label}>{renderStatCard(s)}</div>
                 ))}
-              </Swiper>
-            </div>
-
-            <div className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
-              {stats.map((s) => (
-                <div key={s.label} className="w-full">{renderStatCard(s)}</div>
-              ))}
-            </div>
+              </div>
+            )}
           </div>
 
-          <div className="fade-up-3 bg-white rounded-2xl shadow-sm border border-gray-100 p-6 w-full">
+          <div className="fade-up-3 bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
             <div className="flex items-center justify-between mb-5">
               <div>
                 <p className="text-[11px] uppercase tracking-[2px] text-[#b60a01] font-bold mb-1">Overview</p>
@@ -219,7 +234,7 @@ export default function WelcomeDashboard() {
                 {categoryCounts.map(([category, count]) => {
                   const percent = totalProducts ? Math.round((count / totalProducts) * 100) : 0;
                   return (
-                    <div key={category} className="w-full">
+                    <div key={category}>
                       <div className="flex items-center justify-between mb-1.5">
                         <span className="text-gray-700 text-[13px] font-semibold capitalize">{category}</span>
                         <span className="text-gray-400 text-[12px] font-medium">{count} product{count !== 1 ? "s" : ""}</span>
