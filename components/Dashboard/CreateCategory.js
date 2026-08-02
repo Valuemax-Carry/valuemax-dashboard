@@ -41,7 +41,6 @@ export default function CreateCategory() {
       setError("Please fill all fields");
       return;
     }
-
     setLoading(true);
 
     try {
