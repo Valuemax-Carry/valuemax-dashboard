@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { UploadCloud, Loader2, CheckCircle2, XCircle, X } from "lucide-react";
 
 const API_ORIGIN = process.env.NEXT_PUBLIC_API_ORIGIN;
@@ -32,6 +32,24 @@ export default function CreateProducts() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [fetchedCategories, setFetchedCategories] = useState([]);
+
+  useEffect(() => {
+    async function fetchCategories() {
+      try {
+        const res = await fetch(`${API_ORIGIN}/category/all-categories`, { method: "GET" });
+        const data = await res.json();
+        if (data.success) {
+          setFetchedCategories(data.categories);
+        } else {
+          setFetchedCategories([]);
+        }
+      } catch (err) {
+        setFetchedCategories([]);
+      }
+    }
+    fetchCategories();
+  }, []);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -127,9 +145,9 @@ export default function CreateProducts() {
               className="w-full px-4 py-2.5 rounded-lg border border-gray-200 outline-none focus:border-[#b60a01] focus:ring-2 focus:ring-[#b60a01]/10 transition-all duration-200 text-sm bg-white"
             >
               <option value="">Select category</option>
-              {categories.map((cat) => (
-                <option key={cat.value} value={cat.value}>
-                  {cat.label}
+              {fetchedCategories.map((cat) => (
+                <option key={cat._id} value={cat.slug}>
+                  {cat.name}
                 </option>
               ))}
             </select>
