@@ -74,6 +74,7 @@ export default function TotalProducts() {
     try {
       const res = await fetch(`${API_ORIGIN}/products/delete-product/${deleteTarget._id}`, {
         method: "DELETE",
+        credentials: "include"
       });
       const data = await res.json();
       if (data.success) {

@@ -50,6 +50,7 @@ export default function TotalCategories() {
     try {
       const res = await fetch(`${API_ORIGIN}/category/delete-category/${deleteTarget._id}`, {
         method: "DELETE",
+        credentials: "include",
       });
       const data = await res.json();
       if (data.success) {
