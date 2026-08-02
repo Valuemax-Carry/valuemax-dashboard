@@ -26,6 +26,7 @@ export default function TotalProducts() {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [deleting, setDeleting] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(6);
 
   useEffect(() => {
     async function fetchAll() {
@@ -49,9 +50,19 @@ export default function TotalProducts() {
     fetchAll();
   }, []);
 
+  useEffect(() => {
+    setVisibleCount(6);
+  }, [selectedCategory]);
+
   const categories = ["All", ...Array.from(new Set(products.map((p) => p.productCategories).filter(Boolean)))];
 
   const filtered = selectedCategory === "All" ? products : products.filter((p) => p.productCategories === selectedCategory);
+
+  const visibleProducts = filtered.slice(0, visibleCount);
+
+  const handleShowMore = () => {
+    setVisibleCount((prev) => prev + 6);
+  };
 
   const handleConfirmDelete = async () => {
     if (!deleteTarget) return;
@@ -104,6 +115,8 @@ export default function TotalProducts() {
         .vm-delete-btn { transition: all 0.18s ease; }
         .vm-delete-btn:hover { background: #9a0800; }
         .vm-overlay { animation: fadeIn 0.2s ease both; }
+        .vm-showmore-btn { transition: all 0.18s ease; }
+        .vm-showmore-btn:hover { background: #9a0800; }
       `}</style>
 
       <div className="vm-font min-h-screen bg-[#fafafa] px-5 sm:px-8 py-8">
@@ -152,40 +165,53 @@ export default function TotalProducts() {
               <p className="text-gray-400 text-sm">Try a different category or add new products.</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
-              {filtered.map((p) => {
-                const src = getImageSrc(p.productImage);
-                return (
-                  <div key={p._id} className="vm-card bg-white rounded-2xl overflow-hidden shadow-sm">
-                    <div className="relative w-full h-40 bg-gray-50 overflow-hidden">
-                      {src ? (
-                        <img src={src} alt={p.productName} className="w-full h-full object-cover" />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center">
-                          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" strokeWidth="1.2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
+                {visibleProducts.map((p) => {
+                  const src = getImageSrc(p.productImage);
+                  return (
+                    <div key={p._id} className="vm-card bg-white rounded-2xl overflow-hidden shadow-sm">
+                      <div className="relative w-full h-40 bg-gray-50 overflow-hidden">
+                        {src ? (
+                          <img src={src} alt={p.productName} className="w-full h-full object-cover" />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" strokeWidth="1.2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+                          </div>
+                        )}
+                        <div className="absolute top-3 left-3">
+                          <span className="bg-white/90 backdrop-blur-sm text-[#b60a01] text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wide shadow-sm">
+                            {p.productCategories}
+                          </span>
                         </div>
-                      )}
-                      <div className="absolute top-3 left-3">
-                        <span className="bg-white/90 backdrop-blur-sm text-[#b60a01] text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wide shadow-sm">
-                          {p.productCategories}
-                        </span>
+                      </div>
+                      <div className="px-4 py-4">
+                        <p className="font-semibold text-gray-900 text-[14px] leading-snug mb-1 line-clamp-2">{p.productName}</p>
+                        <p className="text-gray-400 text-[12px] mb-3">{p.productCompany}</p>
+                        <p className="text-gray-400 text-[12px] mb-3">Rs.{p.productPrice}</p>
+                        <button
+                          onClick={() => setDeleteTarget(p)}
+                          className="vm-delete-btn w-full bg-[#b60a01] text-white text-[12px] font-bold px-3.5 py-2 rounded-lg"
+                        >
+                          Delete
+                        </button>
                       </div>
                     </div>
-                    <div className="px-4 py-4">
-                      <p className="font-semibold text-gray-900 text-[14px] leading-snug mb-1 line-clamp-2">{p.productName}</p>
-                      <p className="text-gray-400 text-[12px] mb-3">{p.productCompany}</p>
-                      <p className="text-gray-400 text-[12px] mb-3">Rs.{p.productPrice}</p>
-                      <button
-                        onClick={() => setDeleteTarget(p)}
-                        className="vm-delete-btn w-full bg-[#b60a01] text-white text-[12px] font-bold px-3.5 py-2 rounded-lg"
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+                  );
+                })}
+              </div>
+
+              {visibleCount < filtered.length && (
+                <div className="fade-in flex justify-center mt-8">
+                  <button
+                    onClick={handleShowMore}
+                    className="vm-showmore-btn bg-[#b60a01] text-white text-[13px] font-bold px-6 py-3 rounded-xl"
+                  >
+                    Show More
+                  </button>
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>
