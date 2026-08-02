@@ -48,7 +48,7 @@ export default function TotalCategories() {
     if (!deleteTarget) return;
     setDeleting(true);
     try {
-      const res = await fetch(`${API_ORIGIN}/categories/delete-category/${deleteTarget._id}`, {
+      const res = await fetch(`${API_ORIGIN}/category/delete-category/${deleteTarget._id}`, {
         method: "DELETE",
       });
       const data = await res.json();
