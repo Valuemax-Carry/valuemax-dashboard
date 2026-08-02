@@ -15,6 +15,8 @@ import {
   Package,
   PackagePlus,
   Tags,
+  FolderPlus,
+  Boxes,
 } from "lucide-react";
 
 const API_ORIGIN = process.env.NEXT_PUBLIC_API_ORIGIN;
@@ -22,10 +24,11 @@ const API_ORIGIN = process.env.NEXT_PUBLIC_API_ORIGIN;
 const navItems = [
   { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { label: "CreateProducts", href: "/dashboard/create-products", icon: PackagePlus },
-  { label: "TotalProducts", href: "/dashboard/total-products", icon: Package },
-  { label: "CreateCategory", href: "/dashboard/create-category", icon: Tags },
+  { label: "TotalProducts", href: "/dashboard/total-products", icon: Boxes },
+  { label: "CreateCategory", href: "/dashboard/create-category", icon: FolderPlus },
   { label: "TotalCategories", href: "/dashboard/total-categories", icon: Tags },
 ];
+
 
 const weekDays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
