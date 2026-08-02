@@ -24,6 +24,7 @@ const navItems = [
   { label: "CreateProducts", href: "/dashboard/create-products", icon: PackagePlus },
   { label: "TotalProducts", href: "/dashboard/total-products", icon: Package },
   { label: "CreateCategory", href: "/dashboard/create-category", icon: Tags },
+  { label: "TotalCategories", href: "/dashboard/total-categories", icon: Tags },
 ];
 
 export default function SideBar() {
